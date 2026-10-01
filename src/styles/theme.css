@@ -1,0 +1,81 @@
+:root {
+  /* Colors — primary (deep green) */
+  --color-primary-900: #14291F;
+  --color-primary-700: #1B4332;
+  --color-primary-500: #2D6A4F;
+  --color-primary-100: #B7CFC0;
+
+  /* Neutral / cream */
+  --color-bg: #FAF6EE;
+  --color-surface: #FFFFFF;
+  --color-border: #E8E2D4;
+
+  /* Text */
+  --color-text-primary: #1B2B22;
+  --color-text-secondary: #6B7A6E;
+  --color-text-on-primary: #FAF6EE;
+
+  /* Accent */
+  --color-accent: #C9A227;
+  --color-accent-light: #F3E7C9;
+
+  /* Semantic */
+  --color-success: #2D6A4F;
+  --color-error: #B3261E;
+  --color-warning: #B8860B;
+
+  /* Fonts */
+  --font-heading: 'Manrope', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+
+  /* Font sizes */
+  --text-h1: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  --text-h2: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --text-h3: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+  --text-body: 1rem;
+  --text-small: 0.8125rem;
+  --text-tiny: 0.6875rem;
+
+  /* Font weights */
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+
+  /* Breakpoints — used as JS constants, not CSS vars (see note below) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  font-weight: var(--weight-medium);
+  line-height: 1.25;
+  margin: 0;
+}
+
+a {
+  color: var(--color-primary-700);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
