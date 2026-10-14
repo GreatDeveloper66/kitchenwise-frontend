@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/kitchenwise-logo.png';
 import styles from './RegisterForm.module.css';
@@ -17,10 +17,10 @@ type FieldErrors = Partial<
   Record<'name' | 'email' | 'password' | 'confirmPassword' | 'terms', string>
 >;
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
 const MIN_PASSWORD_LENGTH = 8;
 
-export function RegisterForm({ onSubmit }: RegisterFormProps) {
+export function RegisterForm({ onSubmit }: Readonly<RegisterFormProps>) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,7 +42,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     return errors;
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormError(null);
 
