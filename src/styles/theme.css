@@ -79,3 +79,15 @@ a:hover {
   color: var(--color-accent);
   text-decoration: underline;
 }
+
+/* ============================================
+   BREAKPOINTS
+   Keep these pixel values in sync with
+   src/styles/breakpoints.ts — CSS can't read
+   from that file directly.
+
+   mobile:  0px   (base styles, mobile-first)
+   tablet:  768px
+   desktop: 1024px
+   wide:    1440px
+   ============================================ */
