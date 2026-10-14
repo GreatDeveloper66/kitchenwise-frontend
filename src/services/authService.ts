@@ -14,3 +14,21 @@ export async function login(credentials: LoginFormValues): Promise<AuthResponse>
   const response = await api.post<AuthResponse>('/auth/login', credentials);
   return response.data;
 }
+
+
+export interface RegisterValues {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export async function register(values: RegisterValues): Promise<AuthResponse> {
+  const response = await api.post<AuthResponse>('/auth/register', values);
+  return response.data;
+}
+
+// Shared by LoginPage and RegisterPage so token storage lives in one place
+export function saveSession({ token, user }: AuthResponse): void {
+  localStorage.setItem('kitchenwise_token', token);
+  localStorage.setItem('kitchenwise_user', JSON.stringify(user));
+}
