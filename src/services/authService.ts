@@ -32,3 +32,22 @@ export function saveSession({ token, user }: AuthResponse): void {
   localStorage.setItem('kitchenwise_token', token);
   localStorage.setItem('kitchenwise_user', JSON.stringify(user));
 }
+
+
+export function getUser(): AuthResponse['user'] | null {
+  try {
+    const raw = localStorage.getItem('kitchenwise_user');
+    return raw ? (JSON.parse(raw) as AuthResponse['user']) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function isAuthenticated(): boolean {
+  return Boolean(localStorage.getItem('kitchenwise_token'));
+}
+
+export function clearSession(): void {
+  localStorage.removeItem('kitchenwise_token');
+  localStorage.removeItem('kitchenwise_user');
+}
