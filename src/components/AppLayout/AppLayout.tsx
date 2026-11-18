@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 export function AppLayout() {
   const navigate = useNavigate();
   const user = getUser();
-  const initial = user?.name?.charAt(0).toUpperCase() ?? '?';
+  const initial = user?.firstName?.charAt(0).toUpperCase() ?? '?';
 
   const handleLogout = async () => {
     clearSession();

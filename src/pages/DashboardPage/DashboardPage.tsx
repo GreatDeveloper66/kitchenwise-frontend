@@ -19,7 +19,7 @@ function getGreeting(): string {
 }
 
 export function DashboardPage() {
-  const firstName = getUser()?.name?.split(' ')[0];
+  const firstName = getUser()?.firstName;
 
   return (
     <div className={styles.page}>
