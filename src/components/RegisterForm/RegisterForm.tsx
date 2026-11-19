@@ -1,11 +1,13 @@
-import { useState, type SubmitEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/kitchenwise-logo.png';
 import styles from './RegisterForm.module.css';
 
 export interface RegisterFormValues {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phone: string;
   password: string;
 }
 
@@ -13,16 +15,25 @@ interface RegisterFormProps {
   onSubmit: (values: RegisterFormValues) => Promise<void> | void;
 }
 
-type FieldErrors = Partial<
-  Record<'name' | 'email' | 'password' | 'confirmPassword' | 'terms', string>
->;
+type FieldName =
+  | 'firstName'
+  | 'lastName'
+  | 'email'
+  | 'phone'
+  | 'password'
+  | 'confirmPassword'
+  | 'terms';
+type FieldErrors = Partial<Record<FieldName, string>>;
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
+const PHONE_DIGITS = 10;
 
-export function RegisterForm({ onSubmit }: Readonly<RegisterFormProps>) {
-  const [name, setName] = useState('');
+export function RegisterForm({ onSubmit }: RegisterFormProps) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -30,10 +41,16 @@ export function RegisterForm({ onSubmit }: Readonly<RegisterFormProps>) {
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const phoneDigits = phone.replace(/\D/g, '');
+
   const validate = (): FieldErrors => {
     const errors: FieldErrors = {};
-    if (!name.trim()) errors.name = 'Please enter your name.';
-    if (!EMAIL_PATTERN.test(email)) errors.email = 'Please enter a valid email address.';
+    if (!firstName.trim()) errors.firstName = 'Please enter your first name.';
+    if (!lastName.trim()) errors.lastName = 'Please enter your last name.';
+    if (!EMAIL_PATTERN.test(email.trim())) errors.email = 'Please enter a valid email address.';
+    if (phoneDigits.length !== PHONE_DIGITS) {
+      errors.phone = 'Please enter a 10-digit phone number.';
+    }
     if (password.length < MIN_PASSWORD_LENGTH) {
       errors.password = `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`;
     }
@@ -42,7 +59,7 @@ export function RegisterForm({ onSubmit }: Readonly<RegisterFormProps>) {
     return errors;
   };
 
-  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormError(null);
 
@@ -52,7 +69,13 @@ export function RegisterForm({ onSubmit }: Readonly<RegisterFormProps>) {
 
     try {
       setIsSubmitting(true);
-      await onSubmit({ name: name.trim(), email, password });
+      await onSubmit({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        phone: phoneDigits,
+        password,
+      });
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
     } finally {
@@ -60,7 +83,7 @@ export function RegisterForm({ onSubmit }: Readonly<RegisterFormProps>) {
     }
   };
 
-  const inputClass = (field: keyof FieldErrors) =>
+  const inputClass = (field: FieldName) =>
     fieldErrors[field] ? `${styles.input} ${styles.inputError}` : styles.input;
 
   return (
@@ -74,17 +97,36 @@ export function RegisterForm({ onSubmit }: Readonly<RegisterFormProps>) {
       <p className={styles.subheading}>Set up your profile to get personalized plans.</p>
 
       <form onSubmit={handleSubmit} noValidate>
-        <div className={styles.field}>
-          <label htmlFor="name" className={styles.label}>Full name</label>
-          <input
-            id="name"
-            type="text"
-            className={inputClass('name')}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            autoComplete="name"
-          />
-          {fieldErrors.name && <span className={styles.errorText}>{fieldErrors.name}</span>}
+        <div className={styles.nameRow}>
+          <div className={styles.field}>
+            <label htmlFor="firstName" className={styles.label}>First name</label>
+            <input
+              id="firstName"
+              type="text"
+              className={inputClass('firstName')}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              autoComplete="given-name"
+            />
+            {fieldErrors.firstName && (
+              <span className={styles.errorText}>{fieldErrors.firstName}</span>
+            )}
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="lastName" className={styles.label}>Last name</label>
+            <input
+              id="lastName"
+              type="text"
+              className={inputClass('lastName')}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              autoComplete="family-name"
+            />
+            {fieldErrors.lastName && (
+              <span className={styles.errorText}>{fieldErrors.lastName}</span>
+            )}
+          </div>
         </div>
 
         <div className={styles.field}>
@@ -99,6 +141,21 @@ export function RegisterForm({ onSubmit }: Readonly<RegisterFormProps>) {
             autoComplete="email"
           />
           {fieldErrors.email && <span className={styles.errorText}>{fieldErrors.email}</span>}
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="phone" className={styles.label}>Phone</label>
+          <input
+            id="phone"
+            type="tel"
+            inputMode="tel"
+            placeholder="(555) 555-5555"
+            className={inputClass('phone')}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            autoComplete="tel"
+          />
+          {fieldErrors.phone && <span className={styles.errorText}>{fieldErrors.phone}</span>}
         </div>
 
         <div className={styles.field}>

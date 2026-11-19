@@ -156,3 +156,13 @@
   color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
+
+.nameRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.nameRow > * {
+  min-width: 0;
+}

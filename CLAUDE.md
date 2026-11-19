@@ -15,7 +15,7 @@ src/
   components/   AppLayout, LoginForm, RegisterForm, MealCard, CalorieSummary, ProtectedRoute
   pages/        Login, Register, Dashboard
   routes/       Route definitions
-  services/     One axios client per backend service
+  services/     api.ts (one axios client per backend + toApiError), one *Service.ts per backend, types.ts (shared meal plan shapes)
   hooks/        useMediaQuery
   styles/       theme.css (design tokens), breakpoints.ts
 ```
@@ -36,7 +36,19 @@ src/
 Built: LoginForm/LoginPage, RegisterForm/RegisterPage, dashboard layout and page (hardcoded placeholder meal data).
 Not built: Plan, Grocery, Profile, recipe detail pages.
 
+## Service clients
+
+Each backend has its own base URL env var ending in `/api` (see `.env.example`): `VITE_AUTH_API_URL`, `VITE_DIET_PROFILE_API_URL`, `VITE_MEAL_PLAN_API_URL`, `VITE_PLAN_STORAGE_API_URL`, `VITE_GROCERY_API_URL`, `VITE_RECIPE_API_URL`. Only auth, diet-profile, and plan-storage clients attach the Bearer token.
+
+- authService: login, register, login codes, forgot/reset password, profile get/update, delete account, logout.
+- dietProfileService: create/get/update/delete. `getDietProfile()` returns null on 404.
+- mealPlanService: generateMealPlan, generateMealPlanWithPrice, generateMealPlanImages (unwraps `{ success, data }`).
+- planStorageService: savePlan, getLatestPlan (null if none), updateLatestPlan, deleteLatestPlan.
+- groceryService: findGroceryStores (radius in meters, max 50,000).
+- recipeService: getRecipe(meal).
+
+Meal names from the backends are lowercase (`breakfast | lunch | dinner`); `MealCard`'s `MealType` is capitalized, so map between them when wiring pages.
+
 ## Open questions (ask Adam before changing)
 
-- `.env` has a single `VITE_API_BASE_URL`, but each backend service has its own host. Per-service base URLs will likely be needed.
-- Token storage: if tokens are kept in localStorage, say so plainly as a simplification.
+- Token storage: tokens are kept in localStorage (a simplification; any script on the page can read them).

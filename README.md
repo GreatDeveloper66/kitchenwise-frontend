@@ -37,11 +37,22 @@ src/
 
 ## Environment Variables
 
-Create a `.env` file in the root of the project:
+Each backend service has its own host, so each gets its own base URL. Copy `.env.example` to `.env`:
+
+```powershell
+Copy-Item .env.example .env
+```
 
 ```env
-VITE_API_BASE_URL=http://localhost:3000/api
+VITE_AUTH_API_URL=https://user-auth-service-xi.vercel.app/api
+VITE_DIET_PROFILE_API_URL=https://meal-plan-diet-profile-service.vercel.app/api
+VITE_MEAL_PLAN_API_URL=https://ai-meal-planner-backend.vercel.app/api
+VITE_PLAN_STORAGE_API_URL=https://meal-planner-user-meal-plan-service.vercel.app/api
+VITE_GROCERY_API_URL=https://meal-plan-grocery-service.vercel.app/api
+VITE_RECIPE_API_URL=https://meal-recipe-service.vercel.app/api
 ```
+
+To use a service running locally, point its variable at `http://localhost:<PORT>/api`.
 
 ---
 
