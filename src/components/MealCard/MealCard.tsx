@@ -1,6 +1,6 @@
 import styles from './MealCard.module.css';
 
-export type MealType = 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack';
+export type MealType = 'Breakfast' | 'Lunch' | 'Dinner';
 
 export interface Meal {
   id: string;

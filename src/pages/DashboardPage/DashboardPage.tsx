@@ -1,4 +1,3 @@
-import { Plus } from 'lucide-react';
 import { CalorieSummary } from '../../components/CalorieSummary/CalorieSummary';
 import { MealCard, type Meal } from '../../components/MealCard/MealCard';
 import { getUser } from '../../services/authService';
@@ -36,13 +35,6 @@ export function DashboardPage() {
         {TODAY_MEALS.map((meal) => (
           <MealCard key={meal.id} meal={meal} />
         ))}
-
-        <button type="button" className={styles.addCard}>
-          <span className={styles.addCircle}>
-            <Plus size={14} aria-hidden="true" />
-          </span>
-          <span className={styles.addLabel}>Add snack</span>
-        </button>
       </div>
     </div>
   );

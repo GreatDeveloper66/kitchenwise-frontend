@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { House, CalendarDays, ShoppingCart, User } from 'lucide-react';
 import logo from '../../assets/kitchenwise-logo.png';
-import { clearSession, getUser } from '../../services/authService';
+import { getUser, logout } from '../../services/authService';
 import styles from './AppLayout.module.css';
 
 const NAV_ITEMS = [
@@ -17,7 +17,7 @@ export function AppLayout() {
   const initial = user?.firstName?.charAt(0).toUpperCase() ?? '?';
 
   const handleLogout = async () => {
-    clearSession();
+    await logout();
     await navigate('/');
   };
 

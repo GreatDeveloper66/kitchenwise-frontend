@@ -29,49 +29,9 @@
   gap: var(--space-3);
 }
 
-.addCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-height: 140px;
-  background: var(--color-surface);
-  border: 1.5px dashed var(--color-accent);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font: inherit;
-}
-
-.addCard:hover {
-  background: var(--color-accent-light);
-}
-
-.addCircle {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-accent-light);
-  color: var(--color-warning);
-}
-
-.addLabel {
-  font-family: var(--font-heading);
-  font-size: var(--text-small);
-  font-weight: var(--weight-medium);
-  color: var(--color-warning);
-}
-
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--space-4);
-  }
-
-  .addCard {
-    min-height: 190px;
   }
 }
