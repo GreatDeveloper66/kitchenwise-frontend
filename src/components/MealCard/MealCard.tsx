@@ -8,7 +8,11 @@ export interface Meal {
   calories: number;
   mealType: MealType;
   imageUrl?: string;
+  /** Estimated ingredient cost in US dollars, from the priced plan. */
+  price?: number;
 }
+
+const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
 interface MealCardProps {
   meal: Meal;
@@ -28,6 +32,7 @@ export function MealCard({ meal, onSelect }: Readonly<MealCardProps>) {
         <p className={styles.name}>{meal.name}</p>
         <p className={styles.meta}>
           {meal.calories} cal · {meal.mealType}
+          {meal.price !== undefined && ` · ${currency.format(meal.price)}`}
         </p>
       </div>
     </button>

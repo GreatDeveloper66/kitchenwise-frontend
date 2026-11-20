@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { isAuthenticated } from '../../services/authService';
+import { useAuth } from '../../hooks/useAuth';
 
 export function ProtectedRoute() {
-  return isAuthenticated() ? <Outlet /> : <Navigate to="/" replace />;
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
 }

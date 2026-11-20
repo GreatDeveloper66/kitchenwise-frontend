@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { House, CalendarDays, ShoppingCart, User } from 'lucide-react';
 import logo from '../../assets/kitchenwise-logo.png';
-import { getUser, logout } from '../../services/authService';
+import { useAuth } from '../../hooks/useAuth';
 import styles from './AppLayout.module.css';
 
 const NAV_ITEMS = [
@@ -13,11 +13,11 @@ const NAV_ITEMS = [
 
 export function AppLayout() {
   const navigate = useNavigate();
-  const user = getUser();
+  const { user, signOut } = useAuth();
   const initial = user?.firstName?.charAt(0).toUpperCase() ?? '?';
 
   const handleLogout = async () => {
-    await logout();
+    await signOut();
     await navigate('/');
   };
 

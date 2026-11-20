@@ -37,15 +37,27 @@ export const mealPlanApi = createApiClient(env.VITE_MEAL_PLAN_API_URL, 'VITE_MEA
 export const groceryApi = createApiClient(env.VITE_GROCERY_API_URL, 'VITE_GROCERY_API_URL', false);
 export const recipeApi = createApiClient(env.VITE_RECIPE_API_URL, 'VITE_RECIPE_API_URL', false);
 
+/** An Error that remembers the HTTP status, so callers can react to 401s and 404s. */
+export class ApiError extends Error {
+  readonly status: number | undefined;
+
+  constructor(message: string, status?: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
 /**
- * Turns an axios error into an Error with the server's own message when it sent one.
+ * Turns an axios error into an ApiError with the server's own message when it sent one.
  * The services disagree on the field name: user-auth, diet-profile, and plan-storage use
  * `message`; meal-plan, recipe, and plan-storage's auth check use `error`; grocery uses `statusText`.
  */
-export function toApiError(err: unknown, fallback: string): Error {
+export function toApiError(err: unknown, fallback: string): ApiError {
+  if (err instanceof ApiError) return err;
   if (isAxiosError(err)) {
     if (!err.response) {
-      return new Error('Could not reach the server. Please try again.');
+      return new ApiError('Could not reach the server. Please try again.');
     }
     const data = err.response.data as
       | { message?: unknown; error?: unknown; statusText?: unknown }
@@ -53,12 +65,13 @@ export function toApiError(err: unknown, fallback: string): Error {
     const serverMessage = [data?.message, data?.error, data?.statusText].find(
       (value): value is string => typeof value === 'string' && value.length > 0
     );
-    return new Error(serverMessage ?? fallback);
+    return new ApiError(serverMessage ?? fallback, err.response.status);
   }
-  return err instanceof Error ? err : new Error(fallback);
+  return new ApiError(err instanceof Error ? err.message : fallback);
 }
 
 /** HTTP status of a failed request, or undefined if it never got a response. */
 export function errorStatus(err: unknown): number | undefined {
+  if (err instanceof ApiError) return err.status;
   return isAxiosError(err) ? err.response?.status : undefined;
 }

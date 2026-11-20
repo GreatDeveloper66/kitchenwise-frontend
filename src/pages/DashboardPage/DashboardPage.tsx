@@ -1,14 +1,16 @@
 import { CalorieSummary } from '../../components/CalorieSummary/CalorieSummary';
-import { MealCard, type Meal } from '../../components/MealCard/MealCard';
-import { getUser } from '../../services/authService';
+import { MealCard, type Meal as MealCardData, type MealType } from '../../components/MealCard/MealCard';
+import { PageStatus } from '../../components/PageStatus/PageStatus';
+import { useAuth } from '../../hooks/useAuth';
+import { useLatestPlan } from '../../queries/useLatestPlan';
+import type { Meal, MealName } from '../../services/types';
 import styles from './DashboardPage.module.css';
 
-// TODO: replace with data from the meal plan service once it's wired up
-const TODAY_MEALS: Meal[] = [
-  { id: '1', name: 'Greek yogurt bowl', calories: 310, mealType: 'Breakfast' },
-  { id: '2', name: 'Quinoa power bowl', calories: 460, mealType: 'Lunch' },
-  { id: '3', name: 'Lemon herb salmon', calories: 520, mealType: 'Dinner' },
-];
+const MEAL_TYPES: Record<MealName, MealType> = {
+  breakfast: 'Breakfast',
+  lunch: 'Lunch',
+  dinner: 'Dinner',
+};
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -17,8 +19,29 @@ function getGreeting(): string {
   return 'Good evening';
 }
 
+function sumFoods(meals: Meal[], field: 'calories' | 'protein' | 'carbs'): number {
+  return Math.round(
+    meals.reduce((total, meal) => total + meal.foods.reduce((sum, food) => sum + food[field], 0), 0)
+  );
+}
+
+/** Backend meals have no dish name, only foods, so the card title is the food list. */
+function toCard(meal: Meal): MealCardData {
+  return {
+    id: meal.id,
+    name: meal.foods.map((food) => food.name).join(', ') || MEAL_TYPES[meal.name],
+    calories: sumFoods([meal], 'calories'),
+    mealType: MEAL_TYPES[meal.name],
+    imageUrl: meal.image,
+    price: meal.price,
+  };
+}
+
 export function DashboardPage() {
-  const firstName = getUser()?.firstName;
+  const firstName = useAuth().user?.firstName;
+  // RequireSetup has already loaded this, so it comes straight from the cache
+  const { data: savedPlan } = useLatestPlan();
+  const meals = savedPlan?.mealPlan.meals ?? [];
 
   return (
     <div className={styles.page}>
@@ -28,14 +51,25 @@ export function DashboardPage() {
       </p>
       <h1 className={styles.title}>Today's plan</h1>
 
-      <CalorieSummary consumed={1840} goal={2200} proteinGrams={92} carbsGrams={210} />
+      {meals.length === 0 ? (
+        <PageStatus message="Your meal plan has no meals yet." />
+      ) : (
+        <>
+          {/* No intake tracking yet, so this shows the plan's totals rather than progress */}
+          <CalorieSummary
+            goal={sumFoods(meals, 'calories')}
+            proteinGrams={sumFoods(meals, 'protein')}
+            carbsGrams={sumFoods(meals, 'carbs')}
+          />
 
-      <h2 className={styles.sectionTitle}>Your meals</h2>
-      <div className={styles.grid}>
-        {TODAY_MEALS.map((meal) => (
-          <MealCard key={meal.id} meal={meal} />
-        ))}
-      </div>
+          <h2 className={styles.sectionTitle}>Your meals</h2>
+          <div className={styles.grid}>
+            {meals.map((meal) => (
+              <MealCard key={meal.id} meal={toCard(meal)} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

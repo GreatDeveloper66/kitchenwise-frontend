@@ -12,13 +12,38 @@ Commands: `npm run dev`, `npm run build`, `npm run preview`, `npm run lint`.
 
 ```
 src/
-  components/   AppLayout, LoginForm, RegisterForm, MealCard, CalorieSummary, ProtectedRoute
-  pages/        Login, Register, Dashboard
+  components/   AppLayout, LoginForm, RegisterForm, DietProfileForm, MealCard, CalorieSummary,
+                ProtectedRoute, RequireSetup, PageStatus, SessionExpired
+  pages/        Login, Register, Onboarding, Dashboard, Placeholder
   routes/       Route definitions
-  services/     api.ts (one axios client per backend + toApiError), one *Service.ts per backend, types.ts (shared meal plan shapes)
-  hooks/        useMediaQuery
+  context/      AuthContext + AuthProvider (the session: user, signIn, signOut)
+  queries/      QueryClient config, query keys, useDietProfile, useLatestPlan (TanStack Query)
+  services/     api.ts (one axios client per backend, ApiError with HTTP status), one *Service.ts per
+                backend, planSetupService.ts (generate + save a plan), types.ts (shared meal plan shapes)
+  hooks/        useAuth, useMediaQuery
+  utils/        units.ts (lb/kg and ft-in/cm conversion)
   styles/       theme.css (design tokens), breakpoints.ts
 ```
+
+## State
+
+- Session (user, token): `AuthContext`, read with `useAuth()`. Nothing else reads the session from localStorage.
+- Server data (diet profile, saved plan): TanStack Query via the hooks in `src/queries/`. Don't copy it into
+  Context or component state. After a mutation, update the cache with `queryClient.setQueryData` using `queryKeys`.
+- The query cache is cleared on sign-in and sign-out, so one user's data never shows for another.
+
+## Onboarding flow
+
+Register signs the user in and goes to `/onboarding`. `RequireSetup` guards the main app and sends anyone
+without a diet profile or a saved plan to `/onboarding`. Onboarding creates the diet profile, generates a
+priced plan (`/meal-plan-with-price`), and saves it to plan-storage. A failed step retries only that step.
+A new plan is generated only when the diet profile changes, never on login. A plan is one day
+(breakfast, lunch, dinner); `planSetupService` keeps only the first of each if the AI returns more.
+
+Meal pictures: `useMealImages` (called in `RequireSetup`) fills in missing images in the background, at most
+once per plan per page load, and skips plans with more than 3 meals. It calls `/meal-plan-images`, which
+returns permanent Vercel Blob URLs, then saves them into the plan with `updateLatestPlan`. Links that aren't
+on `*.public.blob.vercel-storage.com` (an old deployment's expiring DALL-E links) are refused, not saved.
 
 ## Rules
 
@@ -33,8 +58,11 @@ src/
 
 ## Status
 
-Built: LoginForm/LoginPage, RegisterForm/RegisterPage, dashboard layout and page (hardcoded placeholder meal data).
-Not built: Plan, Grocery, Profile, recipe detail pages.
+Built: LoginForm/LoginPage, RegisterForm/RegisterPage (auto sign-in), OnboardingPage with DietProfileForm
+(lb/kg and ft-in/cm, converted to kg/cm), RequireSetup guard, AuthContext, TanStack Query, dashboard layout and
+page (shows the saved plan: meal cards built from the food list, calories, price, and image; the summary card
+shows planned totals because intake tracking doesn't exist).
+Not built: Plan, Grocery, Profile (diet profile editing; reuse DietProfileForm with `initialValues`), recipe detail pages.
 
 ## Service clients
 
