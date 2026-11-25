@@ -4,6 +4,7 @@ import { PageStatus } from '../../components/PageStatus/PageStatus';
 import { useAuth } from '../../hooks/useAuth';
 import { useLatestPlan } from '../../queries/useLatestPlan';
 import type { Meal, MealName } from '../../services/types';
+import { sumFoods } from '../../utils/nutrition';
 import styles from './DashboardPage.module.css';
 
 const MEAL_TYPES: Record<MealName, MealType> = {
@@ -17,12 +18,6 @@ function getGreeting(): string {
   if (hour < 12) return 'Good morning';
   if (hour < 18) return 'Good afternoon';
   return 'Good evening';
-}
-
-function sumFoods(meals: Meal[], field: 'calories' | 'protein' | 'carbs'): number {
-  return Math.round(
-    meals.reduce((total, meal) => total + meal.foods.reduce((sum, food) => sum + food[field], 0), 0)
-  );
 }
 
 /** Backend meals have no dish name, only foods, so the card title is the food list. */

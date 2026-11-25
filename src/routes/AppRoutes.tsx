@@ -7,6 +7,7 @@ import { ProtectedRoute } from '../components/ProtectedRoute/ProtectedRoute';
 import { RequireSetup } from '../components/RequireSetup/RequireSetup';
 import { AppLayout } from '../components/AppLayout/AppLayout';
 import { PlaceholderPage } from '../pages/PlaceHolderPage/PlaceHolderPage';
+import { PlanPage } from '../pages/PlanPage/PlanPage';
 import { ProfilePage } from '../pages/ProfilePage/ProfilePage';
 // ...
 
@@ -27,7 +28,7 @@ export function AppRoutes() {
         <Route element={<RequireSetup />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/plan" element={<PlaceholderPage title="Meal plan" />} />
+            <Route path="/plan" element={<PlanPage />} />
             <Route path="/grocery" element={<PlaceholderPage title="Grocery" />} />
             {/* <Route path="/profile" element={<PlaceholderPage title="Profile" />} /> */}
             <Route path="/profile" element={<ProfilePage />} />
