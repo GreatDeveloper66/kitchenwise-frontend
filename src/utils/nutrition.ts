@@ -15,3 +15,8 @@ export function sumPrices(meals: Meal[]): number | undefined {
   if (priced.length === 0) return undefined;
   return priced.reduce((total, meal) => total + (meal.price ?? 0), 0);
 }
+
+/** Grams for display, rounded to a whole number. */
+export function formatGrams(value: number): string {
+  return `${Math.round(value)}g`;
+}

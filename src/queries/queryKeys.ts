@@ -3,4 +3,5 @@
 export const queryKeys = {
   dietProfile: ['dietProfile'] as const,
   latestPlan: ['mealPlan', 'latest'] as const,
+  recipe: (mealId: string) => ['recipe', mealId] as const,
 };

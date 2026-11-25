@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { CalorieSummary } from '../../components/CalorieSummary/CalorieSummary';
 import { MealCard, type Meal as MealCardData, type MealType } from '../../components/MealCard/MealCard';
 import { PageStatus } from '../../components/PageStatus/PageStatus';
@@ -33,6 +34,7 @@ function toCard(meal: Meal): MealCardData {
 }
 
 export function DashboardPage() {
+  const navigate = useNavigate();
   const firstName = useAuth().user?.firstName;
   // RequireSetup has already loaded this, so it comes straight from the cache
   const { data: savedPlan } = useLatestPlan();
@@ -60,7 +62,11 @@ export function DashboardPage() {
           <h2 className={styles.sectionTitle}>Your meals</h2>
           <div className={styles.grid}>
             {meals.map((meal) => (
-              <MealCard key={meal.id} meal={toCard(meal)} />
+              <MealCard
+                key={meal.id}
+                meal={toCard(meal)}
+                onSelect={(card) => void navigate(`/meal/${card.id}`)}
+              />
             ))}
           </div>
         </>

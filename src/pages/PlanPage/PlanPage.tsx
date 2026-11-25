@@ -1,7 +1,9 @@
+import { Link } from 'react-router-dom';
+import { FoodList } from '../../components/FoodList/FoodList';
 import { PageStatus } from '../../components/PageStatus/PageStatus';
 import { useLatestPlan } from '../../queries/useLatestPlan';
 import type { Meal, MealName } from '../../services/types';
-import { sumFoods, sumPrices } from '../../utils/nutrition';
+import { formatGrams as grams, sumFoods, sumPrices } from '../../utils/nutrition';
 import styles from './PlanPage.module.css';
 
 const MEAL_ORDER: MealName[] = ['breakfast', 'lunch', 'dinner'];
@@ -26,10 +28,6 @@ function formatPlanDate(iso: string): string | null {
     month: 'long',
     day: 'numeric',
   });
-}
-
-function grams(value: number): string {
-  return `${Math.round(value)}g`;
 }
 
 export function PlanPage() {
@@ -103,22 +101,10 @@ export function PlanPage() {
               {grams(sumFoods([meal], 'carbs'))} · F {grams(sumFoods([meal], 'fat'))}
             </p>
 
-            <ul className={styles.foods}>
-              {meal.foods.map((food) => (
-                <li key={food.id} className={styles.food}>
-                  <div>
-                    <p className={styles.foodName}>{food.name}</p>
-                    {food.quantity && <p className={styles.foodDetail}>{food.quantity}</p>}
-                  </div>
-                  <div className={styles.foodNumbers}>
-                    <p className={styles.foodCalories}>{Math.round(food.calories)} cal</p>
-                    <p className={styles.foodDetail}>
-                      P {grams(food.protein)} · C {grams(food.carbs)} · F {grams(food.fat)}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <FoodList foods={meal.foods} />
+            <Link to={`/meal/${meal.id}`} className={styles.recipeLink}>
+              Recipe
+            </Link>
           </div>
         </section>
       ))}
