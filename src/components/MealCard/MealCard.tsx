@@ -32,7 +32,7 @@ export function MealCard({ meal, onSelect }: Readonly<MealCardProps>) {
         <p className={styles.name}>{meal.name}</p>
         <p className={styles.meta}>
           {meal.calories} cal · {meal.mealType}
-          {meal.price !== undefined && ` · ${currency.format(meal.price)}`}
+          {meal.price !== undefined && ` · ~${currency.format(meal.price)}`}
         </p>
       </div>
     </button>

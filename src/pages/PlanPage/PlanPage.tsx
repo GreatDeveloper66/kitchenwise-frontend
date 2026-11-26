@@ -77,7 +77,7 @@ export function PlanPage() {
         </div>
         {totalPrice !== undefined && (
           <div className={styles.total}>
-            <dt>Groceries</dt>
+            <dt>Est. groceries</dt>
             <dd>{currency.format(totalPrice)}</dd>
           </div>
         )}
@@ -93,7 +93,7 @@ export function PlanPage() {
                 {MEAL_LABELS[meal.name]}
               </h2>
               {meal.price !== undefined && (
-                <span className={styles.price}>{currency.format(meal.price)}</span>
+                <span className={styles.price}>Est. {currency.format(meal.price)}</span>
               )}
             </div>
             <p className={styles.mealMeta}>

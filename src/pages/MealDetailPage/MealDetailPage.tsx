@@ -62,6 +62,11 @@ export function MealDetailPage() {
           <p className={styles.recipeMeta}>
             Serves {recipe.servings} · Prep {recipe.prepTime} min · Cook {recipe.cookTime} min
           </p>
+          {recipe.estimatedTotalCost !== undefined && (
+            <p className={styles.recipeMeta}>
+              Estimated cost {currency.format(recipe.estimatedTotalCost)} (AI estimate, not a store price)
+            </p>
+          )}
           <p className={styles.description}>{recipe.description}</p>
 
           <h3 className={styles.subheading}>Ingredients</h3>
@@ -69,7 +74,9 @@ export function MealDetailPage() {
             {recipe.ingredients.map((ingredient, index) => (
               <li key={`${ingredient.name}-${index}`} className={styles.ingredient}>
                 <span>{ingredient.display}</span>
-                {ingredient.standardName && <span className={styles.tag}>In price list</span>}
+                {ingredient.estimatedCost !== undefined && (
+                  <span className={styles.cost}>~{currency.format(ingredient.estimatedCost)}</span>
+                )}
               </li>
             ))}
           </ul>
@@ -132,7 +139,7 @@ export function MealDetailPage() {
             <h1 id="meal-heading" className={styles.title}>
               {MEAL_LABELS[meal.name]}
             </h1>
-            {price !== undefined && <span className={styles.price}>{currency.format(price)}</span>}
+            {price !== undefined && <span className={styles.price}>Est. {currency.format(price)}</span>}
           </div>
           <p className={styles.meta}>
             {sumFoods([meal], 'calories')} cal · P {formatGrams(sumFoods([meal], 'protein'))} · C{' '}

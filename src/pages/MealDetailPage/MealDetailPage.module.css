@@ -158,13 +158,10 @@
   color: var(--color-text-primary);
 }
 
-.tag {
+.cost {
   flex-shrink: 0;
-  font-size: var(--text-tiny);
-  color: var(--color-primary-700);
-  background: var(--color-primary-100);
-  border-radius: var(--radius-sm);
-  padding: 2px var(--space-2);
+  font-size: var(--text-small);
+  color: var(--color-text-secondary);
 }
 
 .directions {

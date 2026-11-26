@@ -8,13 +8,18 @@ export type Unit = (typeof UNITS)[number];
 
 export interface Ingredient {
   name: string;
-  /** Matches a name in the grocery price list, or null when there's no match (price unavailable). */
+  /** Matches a name in the grocery price list, or null when there's no match. Used to recognize ingredients, not to price them. */
   standardName: string | null;
   quantity: number;
   unit: Unit;
   preparation: string | null;
   /** Human-readable line, e.g. "2 large eggs, scrambled". */
   display: string;
+  /**
+   * AI estimate in USD for only the amount the recipe uses. Not a store price. Optional so the
+   * app keeps working against a recipe service that predates this field.
+   */
+  estimatedCost?: number;
 }
 
 export interface Recipe {
@@ -27,6 +32,8 @@ export interface Recipe {
   description: string;
   ingredients: Ingredient[];
   directions: string[];
+  /** Sum of the ingredient estimates, added by the service. Optional like `estimatedCost`. */
+  estimatedTotalCost?: number;
 }
 
 const AI_TIMEOUT_MS = 90_000;
