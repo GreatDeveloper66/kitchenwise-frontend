@@ -74,7 +74,7 @@ export function MealDetailPage() {
             {recipe.ingredients.map((ingredient, index) => (
               <li key={`${ingredient.name}-${index}`} className={styles.ingredient}>
                 <span>{ingredient.display}</span>
-                {ingredient.estimatedCost !== undefined && (
+                {ingredient.estimatedCost !== undefined && ingredient.estimatedCost > 0 && (
                   <span className={styles.cost}>~{currency.format(ingredient.estimatedCost)}</span>
                 )}
               </li>
